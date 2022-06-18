@@ -36,7 +36,6 @@ class HttpServiceImpl implements HttpService {
   @override
   void init() async {
     var accessToken = await SPUtils.getValue(SPUtils.keyAccessToken);
-    print('accessToken: $accessToken');
     _dio = Dio(BaseOptions(
       baseUrl: ApiProvider.baseUrl,
       headers: {
