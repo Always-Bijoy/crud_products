@@ -25,15 +25,25 @@ class Repository {
     }
   }
 
-  Future<List<ProductsModel>?> getProductRequest(String url) async {
+  Future<List<ProductsModel>?> getProductRequest() async {
     try {
-      final response = await _httpService.getRequest(url);
+      final response = await _httpService.getRequest(ApiProvider.productsUrl);
       debugPrint('Response from repo ${response.statusCode}, ${response.data}');
-      // return ProductsModel.fromJson(response.data);
       final productsModel = (response.data as List)
           .map((e) => ProductsModel.fromJson(e))
           .toList();
       return productsModel;
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future postAddProduct(data) async {
+    try {
+      final response = await _httpService.postRequest(ApiProvider.createProduct, data);
+      debugPrint('Response from repo ${response.statusCode}, ${response.data}');
+      return response.data;
     } on Exception catch (e) {
       debugPrint(e.toString());
       return null;

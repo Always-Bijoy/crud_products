@@ -13,12 +13,13 @@ class ProductScreenController extends GetxController {
     getProduct();
   }
 
-  void getProduct() async {
+  Future getProduct() async {
+    products.clear();
     var accessToken = await SPUtils.getValue(SPUtils.keyAccessToken);
     print(accessToken);
     isLoading.value = true;
     final productsModel =
-        await repository.getProductRequest(ApiProvider.productsUrl);
+        await repository.getProductRequest();
     if (productsModel != null) {
       products.addAll(productsModel.obs);
     }

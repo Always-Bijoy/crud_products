@@ -1,4 +1,6 @@
 import 'package:crud_product/controller/product_screen_controller.dart';
+import 'package:crud_product/screen/add_product_screen.dart';
+import 'package:crud_product/screen/edit_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +12,12 @@ class ProductScreen extends StatelessWidget {
     final controller =
         Get.put<ProductScreenController>(ProductScreenController());
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () => Get.to(const AddProductScreen())),
+      appBar: AppBar(
+        title: const Text('Product List'),
+      ),
       body: Obx(
         () => Stack(
           children: [
@@ -17,8 +25,18 @@ class ProductScreen extends StatelessWidget {
                 ? ListView.builder(
                     itemCount: controller.products.length,
                     itemBuilder: (context, index) {
+                      final data = controller.products[index];
                       return ListTile(
-                        title: Text('Product $index'),
+                        leading: data.isAvailable == true
+                            ? const Icon(Icons.check_circle_sharp)
+                            : const Icon(Icons.radio_button_unchecked_sharp),
+                        title: Text(data.name ?? ''),
+                        subtitle: Text(data.description ?? ''),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => Get.to(const EditProductScreen(),
+                              arguments: data),
+                        ),
                       );
                     })
                 : const SizedBox(),

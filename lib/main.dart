@@ -1,4 +1,5 @@
 import 'package:crud_product/screen/login_screen.dart';
+import 'package:crud_product/screen/middleware_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreen(),
+      home: const MiddlewareScreen(),
     );
   }
 }
