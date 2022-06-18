@@ -29,10 +29,25 @@ class AddProductScreen extends StatelessWidget {
                   labelText: 'Description',
                 ),
               ),
+              Obx(() {
+                return CheckboxListTile(
+                  title: const Text('Available'),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  dense: false,
+                  contentPadding: const EdgeInsets.all(0),
+                  value: controller.isAvailable.value,
+                  onChanged: (value) {
+                    print(value);
+                    controller.isAvailable.value =
+                    !controller.isAvailable.value;
+                  },
+                );
+              }),
+
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: controller.addProduct,
-                child: const Text('Login'),
+                child: const Text('Add'),
               ),
             ],
           ),

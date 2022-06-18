@@ -10,15 +10,23 @@ class AddProductController extends GetxController {
   final productScreenController = Get.find<ProductScreenController>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  bool isAvailable = false;
+  RxBool isAvailable = false.obs;
   RxBool isLoading = false.obs;
+  // Rx<SingingCharacter?> character = SingingCharacter.lafayette.obs;
+
+
+  getValue(value){
+    isAvailable.value = value;
+    print(isAvailable.value);
+    update();
+  }
 
   void addProduct() async{
     final data = {
       "tenantId": 10,
       "name": nameController.text,
       "description": descriptionController.text,
-      "isAvailable": isAvailable
+      "isAvailable": isAvailable.value
     };
 
     final response = await repository.postAddProduct(data);
@@ -32,3 +40,4 @@ class AddProductController extends GetxController {
     isLoading.value = false;
   }
 }
+enum SingingCharacter { lafayette, jefferson }

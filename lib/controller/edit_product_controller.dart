@@ -11,7 +11,7 @@ class EditProductController extends GetxController{
   final productScreenController = Get.find<ProductScreenController>();
   late TextEditingController nameController;
   late TextEditingController descriptionController;
-  bool isAvailable = false;
+  RxBool isAvailable = false.obs;
   RxBool isLoading = false.obs;
   late int id;
 
@@ -23,6 +23,7 @@ class EditProductController extends GetxController{
     nameController = TextEditingController(text: product.name);
     descriptionController = TextEditingController(text: product.description);
     id = product.id!;
+    isAvailable.value = product.isAvailable!;
   }
 
   void editProduct() async{
