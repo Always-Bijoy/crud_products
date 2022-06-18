@@ -31,7 +31,7 @@ class EditProductController extends GetxController{
       "tenantId": 10,
       "name": nameController.text,
       "description": descriptionController.text,
-      "isAvailable": isAvailable,
+      "isAvailable": isAvailable.value,
       "id": id
     };
 
