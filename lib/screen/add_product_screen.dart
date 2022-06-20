@@ -37,13 +37,11 @@ class AddProductScreen extends StatelessWidget {
                   contentPadding: const EdgeInsets.all(0),
                   value: controller.isAvailable.value,
                   onChanged: (value) {
-                    print(value);
                     controller.isAvailable.value =
-                    !controller.isAvailable.value;
+                        !controller.isAvailable.value;
                   },
                 );
               }),
-
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: controller.addProduct,

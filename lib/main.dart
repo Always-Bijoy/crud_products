@@ -1,4 +1,3 @@
-import 'package:crud_product/screen/login_screen.dart';
 import 'package:crud_product/screen/middleware_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

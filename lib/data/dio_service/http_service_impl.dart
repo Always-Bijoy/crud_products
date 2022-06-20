@@ -15,7 +15,7 @@ class HttpServiceImpl implements HttpService {
       debugPrint(response.toString());
     } on DioError catch (e) {
       debugPrint(e.message);
-      throw UnimplementedError();
+      throw Exception(e.message);
     }
     return response;
   }
@@ -28,7 +28,7 @@ class HttpServiceImpl implements HttpService {
       debugPrint(response.toString());
     } on DioError catch (e) {
       debugPrint(e.message);
-      throw UnimplementedError();
+      throw Exception(e.message);
     }
     return response;
   }
@@ -40,7 +40,7 @@ class HttpServiceImpl implements HttpService {
       baseUrl: ApiProvider.baseUrl,
       headers: {
         "Authorization": "Bearer $accessToken",
-        "Abp.TenantId": "10",
+        "Abp.TenantId": 10,
       },
     ));
   }

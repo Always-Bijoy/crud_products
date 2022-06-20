@@ -37,9 +37,8 @@ class EditProductScreen extends StatelessWidget {
                   contentPadding: const EdgeInsets.all(0),
                   value: controller.isAvailable.value,
                   onChanged: (value) {
-                    print(value);
                     controller.isAvailable.value =
-                    !controller.isAvailable.value;
+                        !controller.isAvailable.value;
                   },
                 );
               }),

@@ -30,4 +30,12 @@ class ProductsModel {
         isAvailable: json["isAvailable"],
         id: json["id"],
       );
+
+  Map<String, dynamic> toJson() => {
+        "tenantId": tenantId,
+        "name": name,
+        "description": description,
+        "isAvailable": isAvailable,
+        "id": id,
+      };
 }

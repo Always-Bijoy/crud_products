@@ -21,11 +21,11 @@ class ProductScreen extends StatelessWidget {
       body: Obx(
         () => Stack(
           children: [
-            controller.products.isNotEmpty
+            controller.productsSP != null
                 ? ListView.builder(
-                    itemCount: controller.products.length,
+                    itemCount: controller.productsSP.length,
                     itemBuilder: (context, index) {
-                      final data = controller.products[index];
+                      final data = controller.productsSP[index];
                       return ListTile(
                         onTap: ()=> Get.to(const EditProductScreen(),
                             arguments: data),
