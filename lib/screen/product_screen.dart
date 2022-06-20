@@ -31,8 +31,7 @@ class ProductScreen extends StatelessWidget {
                           data.isDownloaded != true
                               ? Get.to(const EditProductScreen(),
                                   arguments: data)
-                              : Get.to(const AddProductScreen(),
-                                  arguments: data);
+                              : controller.offlineProductSend(data);
                         },
                         leading: data.isAvailable == true
                             ? const Icon(Icons.check_circle_sharp)
@@ -42,9 +41,8 @@ class ProductScreen extends StatelessWidget {
                         trailing: data.isDownloaded
                             ? IconButton(
                                 icon: const Icon(Icons.upload),
-                                onPressed: () => Get.to(
-                                    const EditProductScreen(),
-                                    arguments: data),
+                                onPressed: () => const SizedBox(),
+                                // Get.to(const EditProductScreen(),arguments: data),
                               )
                             : const SizedBox(),
                       );

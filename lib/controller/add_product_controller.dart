@@ -11,23 +11,17 @@ import '../data/shared_pref/shared_preferences.dart';
 class AddProductController extends GetxController {
   final repository = Get.put(Repository());
   final productScreenController = Get.find<ProductScreenController>();
-  late TextEditingController nameController;
-  late TextEditingController descriptionController;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   RxBool isAvailable = false.obs;
   RxBool isLoading = false.obs;
   ConnectivityResult? _connectivityResult;
-  RxList<ProductsModel>? products = <ProductsModel>[].obs;
+  RxList<ProductsModel> products = <ProductsModel>[].obs;
 
-  ProductsModel? product;
+  ProductsModel? offlineProduct;
 
   AddProductController() {
-    product = Get.arguments;
-
-    nameController = TextEditingController(text: product?.name);
-    descriptionController = TextEditingController(text: product?.description);
-    product != null
-        ? isAvailable.value = product!.isAvailable!
-        : isAvailable.value = false;
+    offlineProduct = Get.arguments;
   }
 
   // check internet connection
@@ -62,18 +56,20 @@ class AddProductController extends GetxController {
       }
       isLoading.value = false;
     } else {
-      products?.add(ProductsModel(
+      products.add(ProductsModel(
           tenantId: 10,
           name: nameController.text,
           description: descriptionController.text,
           isAvailable: isAvailable.value,
           isDownloaded: true));
 
+      SPUtils.setListValue(SPUtils.keyOfflineProducts, products);
+
       Fluttertoast.showToast(msg: 'No Internet Connection');
       var productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
 
       /// marge new product with old SP product
-      var listMarge = [...products!, ...productsSP!];
+      var listMarge = [...products, ...productsSP!];
       SPUtils.setListValue(SPUtils.keyProducts, listMarge);
 
       /// refresh product list in product screen
