@@ -7,6 +7,7 @@ import '../data/shared_pref/shared_preferences.dart';
 class ProductScreenController extends GetxController {
   final repository = Get.put(Repository());
   RxList<ProductsModel> products = <ProductsModel>[].obs;
+  List<ProductsModel>? productsModel = [];
   // RxList<ProductsModel> productsSP = <ProductsModel>[].obs;
   var productsSP;
   RxBool isLoading = false.obs;
@@ -20,18 +21,23 @@ class ProductScreenController extends GetxController {
     // var accessToken = await SPUtils.getValue(SPUtils.keyAccessToken);
     // await SPUtils.deleteKey(SPUtils.keyProducts);
     isLoading.value = true;
-    final productsModel = await repository.getProductRequest();
+    productsModel = await repository.getProductRequest();
     if (productsModel != null) {
       /// delete list from old value
       await SPUtils.deleteKey(SPUtils.keyProducts);
-      products.addAll(productsModel.obs);
+      products.addAll(productsModel!);
 
       ///set new product in SP
-      SPUtils.setListValue(SPUtils.keyProducts, productsModel.obs);
+      SPUtils.setListValue(SPUtils.keyProducts, products);
     }
     isLoading.value = false;
 
     /// get SP values
+    // productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
+    getSPDataList();
+  }
+
+  getSPDataList() async {
     productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
   }
 }

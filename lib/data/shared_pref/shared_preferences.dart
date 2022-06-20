@@ -7,6 +7,7 @@ class SPUtils {
   static const String keyAccessToken = "key_access_token";
   static const String keyUserId = "key_user_id";
   static const String keyProducts = "key_products";
+  static const String keyOfflineProducts = "key_offline_products";
 
   // static Future<void> setAccessToken(String accessToken) async {
   //   await SharedPreferences.getInstance().then((prefs) {

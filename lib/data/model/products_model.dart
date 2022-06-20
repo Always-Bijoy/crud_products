@@ -9,19 +9,20 @@
 // String productsModelToJson(List<ProductsModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ProductsModel {
-  ProductsModel({
-    this.tenantId,
-    this.name,
-    this.description,
-    this.isAvailable,
-    this.id,
-  });
+  ProductsModel(
+      {this.tenantId,
+      this.name,
+      this.description,
+      this.isAvailable,
+      this.id,
+      this.isDownloaded = false});
 
   int? tenantId;
   String? name;
   String? description;
   bool? isAvailable;
   int? id;
+  bool? isDownloaded;
 
   factory ProductsModel.fromJson(Map<String, dynamic> json) => ProductsModel(
         tenantId: json["tenantId"],
@@ -29,6 +30,7 @@ class ProductsModel {
         description: json["description"],
         isAvailable: json["isAvailable"],
         id: json["id"],
+        isDownloaded: json["isDownloaded"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -37,5 +39,6 @@ class ProductsModel {
         "description": description,
         "isAvailable": isAvailable,
         "id": id,
+        "isDownloaded": isDownloaded,
       };
 }

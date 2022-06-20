@@ -27,18 +27,26 @@ class ProductScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final data = controller.productsSP[index];
                       return ListTile(
-                        onTap: ()=> Get.to(const EditProductScreen(),
-                            arguments: data),
+                        onTap: () {
+                          data.isDownloaded != true
+                              ? Get.to(const EditProductScreen(),
+                                  arguments: data)
+                              : Get.to(const AddProductScreen(),
+                                  arguments: data);
+                        },
                         leading: data.isAvailable == true
                             ? const Icon(Icons.check_circle_sharp)
                             : const Icon(Icons.radio_button_unchecked_sharp),
                         title: Text(data.name ?? ''),
                         subtitle: Text(data.description ?? ''),
-                        // trailing: IconButton(
-                        //   icon: const Icon(Icons.edit),
-                        //   onPressed: () => Get.to(const EditProductScreen(),
-                        //       arguments: data),
-                        // ),
+                        trailing: data.isDownloaded
+                            ? IconButton(
+                                icon: const Icon(Icons.upload),
+                                onPressed: () => Get.to(
+                                    const EditProductScreen(),
+                                    arguments: data),
+                              )
+                            : const SizedBox(),
                       );
                     })
                 : const SizedBox(),

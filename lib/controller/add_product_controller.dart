@@ -4,17 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../data/model/products_model.dart';
 import '../data/repository/repository.dart';
+import '../data/shared_pref/shared_preferences.dart';
 
 class AddProductController extends GetxController {
   final repository = Get.put(Repository());
   final productScreenController = Get.find<ProductScreenController>();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+  late TextEditingController nameController;
+  late TextEditingController descriptionController;
   RxBool isAvailable = false.obs;
   RxBool isLoading = false.obs;
   ConnectivityResult? _connectivityResult;
-  // Rx<SingingCharacter?> character = SingingCharacter.lafayette.obs;
+  RxList<ProductsModel>? products = <ProductsModel>[].obs;
+
+  ProductsModel? product;
+
+  AddProductController() {
+    product = Get.arguments;
+
+    nameController = TextEditingController(text: product?.name);
+    descriptionController = TextEditingController(text: product?.description);
+    product != null
+        ? isAvailable.value = product!.isAvailable!
+        : isAvailable.value = false;
+  }
 
   // check internet connection
   Future<bool> checkInternetConnection() async {
@@ -48,7 +62,22 @@ class AddProductController extends GetxController {
       }
       isLoading.value = false;
     } else {
+      products?.add(ProductsModel(
+          tenantId: 10,
+          name: nameController.text,
+          description: descriptionController.text,
+          isAvailable: isAvailable.value,
+          isDownloaded: true));
+
       Fluttertoast.showToast(msg: 'No Internet Connection');
+      var productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
+
+      /// marge new product with old SP product
+      var listMarge = [...products!, ...productsSP!];
+      SPUtils.setListValue(SPUtils.keyProducts, listMarge);
+
+      /// refresh product list in product screen
+      productScreenController.getSPDataList();
     }
   }
 }
