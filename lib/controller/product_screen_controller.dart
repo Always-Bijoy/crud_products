@@ -10,123 +10,109 @@ import '../data/shared_pref/shared_preferences.dart';
 class ProductScreenController extends GetxController {
   final Repository repository = Get.find();
   RxList<ProductsModel> products = <ProductsModel>[].obs;
+
   // AddProductController addProductController = Get.put(AddProductController());
   // AddProductController addProductController = Get.find();
   List<ProductsModel>? productsModel = [];
   List<ProductsModel>? productsSP = [];
   RxBool isLoading = false.obs;
   ConnectivityResult? _connectivityResult;
+  RxBool isConnected = false.obs;
 
   ProductScreenController() {
+    checkInternet();
     getProduct();
   }
 
+  checkInternet() async {
+    isConnected = await checkInternetConnection();
+  }
+
   // check internet connection
-  Future<bool> checkInternetConnection() async {
+  Future<RxBool> checkInternetConnection() async {
     try {
       _connectivityResult = await Connectivity().checkConnectivity();
       if (_connectivityResult == ConnectivityResult.none) {
-        return Future<bool>.value(false);
+        return Future<RxBool>.value(false.obs);
       }
     } catch (e) {
-      return Future<bool>.value(false);
+      return Future<RxBool>.value(false.obs);
     }
-    return Future<bool>.value(true);
+    return Future<RxBool>.value(true.obs);
   }
 
   Future getProduct() async {
+    await checkInternet();
+    if (!isConnected.value) Fluttertoast.showToast(msg: 'You are offline');
     products.clear();
-    // var accessToken = await SPUtils.getValue(SPUtils.keyAccessToken);
-    // await SPUtils.deleteKey(SPUtils.keyProducts);
     isLoading.value = true;
-    // productsModel = await repository.getProductRequest();
-
-    try{
+    try {
       productsSP = await getSPDataList();
-      if(productsSP != null) {
+      if (productsSP != null) {
         products.addAll(productsSP!);
       }
-    }catch(e){
+    } catch (e) {
       return e.toString();
-    }finally{
+    } finally {
       products.clear();
       productsModel = await repository.getProductRequest();
-      if(productsModel != null) {
-
+      if (productsModel != null) {
         ///get offline products
         ///store to server
-        final localData = await SPUtils.getListValue(SPUtils.keyOfflineProducts);
-        if(localData != null){
-          if(localData.isNotEmpty){
+        final localData =
+            await SPUtils.getListValue(SPUtils.keyOfflineProducts);
+        if (localData != null) {
+          if (localData.isNotEmpty) {
             localData.map((product) async {
               await repository.postAddProduct(product.toRawJson());
 
-                Future.delayed(const Duration(milliseconds: 200));
-
+              Future.delayed(const Duration(milliseconds: 200));
             }).toList();
           }
         }
-        products.clear();
+        // products.clear();
         productsModel = await repository.getProductRequest();
 
-        ///clear local cache data
-        final isCleared = await SPUtils.clearCache();
-        if(isCleared){
-          print('cache cleared');
-        }
         products.addAll(productsModel!);
+
         ///set new product in SP
         SPUtils.setListValue(SPUtils.keyProducts, products);
+
+        /// after set new products in SP
+        /// need to fetch again
+        productsSP = await getSPDataList();
+
+        /// delete offline product
         SPUtils.deleteKey(SPUtils.keyOfflineProducts);
       }
     }
-    // if (productsModel != null) {
-    //   /// delete list from old value
-    //   // await SPUtils.deleteKey(SPUtils.keyProducts);
-    //   products.addAll(productsModel!);
-    //
-    //   // if (addProductController.products.isNotEmpty) {
-    //   //   List<ProductsModel> listMarge = [
-    //   //     ...addProductController.products,
-    //   //     ...productsSP!
-    //   //   ];
-    //   //   SPUtils.setListValue(SPUtils.keyProducts, listMarge);
-    //   // }
-    //
-    //   ///set new product in SP
-    //   SPUtils.setListValue(SPUtils.keyProducts, products);
-    // }
     isLoading.value = false;
-
-    /// get SP values
-    // productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
-    // getSPDataList();
   }
 
   Future<List<ProductsModel>?> getSPDataList() async {
     return await SPUtils.getListValue(SPUtils.keyProducts);
   }
 
-  void offlineProductSend(ProductsModel offlineProduct) async {
-    final data = {
-      "tenantId": 10,
-      "name": offlineProduct.name,
-      "description": offlineProduct.description,
-      "isAvailable": offlineProduct.isAvailable,
-    };
-
-    bool isNetworkConnected = await checkInternetConnection();
-    if (isNetworkConnected) {
-      final response = await repository.postAddProduct(data);
-      isLoading.value = true;
-      if (response != null) {
-        Fluttertoast.showToast(msg: 'Product Uploaded');
-        await getProduct();
-        isLoading.value = false;
-      }
-      isLoading.value = false;
-    } else {
-      Fluttertoast.showToast(msg: 'No Internet Connection');
-    }
-  }
+// void offlineProductSend(ProductsModel offlineProduct) async {
+//   final data = {
+//     "tenantId": 10,
+//     "name": offlineProduct.name,
+//     "description": offlineProduct.description,
+//     "isAvailable": offlineProduct.isAvailable,
+//   };
+//
+//   bool isNetworkConnected = await checkInternetConnection();
+//   if (isNetworkConnected) {
+//     final response = await repository.postAddProduct(data);
+//     isLoading.value = true;
+//     if (response != null) {
+//       Fluttertoast.showToast(msg: 'Product Uploaded');
+//       await getProduct();
+//       isLoading.value = false;
+//     }
+//     isLoading.value = false;
+//   } else {
+//     Fluttertoast.showToast(msg: 'No Internet Connection');
+//   }
+// }
 }

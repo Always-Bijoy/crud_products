@@ -48,11 +48,10 @@ class AddProductController extends GetxController {
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
       final response = await repository.postAddProduct(data);
-      print('response type: ${response.runtimeType}');
       isLoading.value = true;
       if (response != null) {
         Fluttertoast.showToast(msg: 'Product Added');
-        // await productScreenController.getProduct();
+        await productScreenController.getProduct();
         isLoading.value = false;
         Get.back();
       }
@@ -67,7 +66,7 @@ class AddProductController extends GetxController {
 
       SPUtils.setListValue(SPUtils.keyOfflineProducts, products);
 
-      Fluttertoast.showToast(msg: 'No Internet Connection');
+      Fluttertoast.showToast(msg: 'Product added in offline');
       var productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
 
       /// marge new product with old SP product
@@ -75,7 +74,8 @@ class AddProductController extends GetxController {
       SPUtils.setListValue(SPUtils.keyProducts, listMarge);
 
       /// refresh product list in product screen
-      productScreenController.getSPDataList();
+      await productScreenController.getProduct();
+      Get.back();
     }
   }
 }
