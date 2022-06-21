@@ -26,6 +26,7 @@ class ProductScreenController extends GetxController {
 
   checkInternet() async {
     isConnected = await checkInternetConnection();
+    print(isConnected);
   }
 
   // check internet connection

@@ -32,10 +32,15 @@ class ProductScreen extends StatelessWidget {
                         final data = controller.productsSP![index];
                         return ListTile(
                           onTap: () {
+                            controller.checkInternet();
                             data.isDownloaded != true
-                                ? Get.to(const EditProductScreen(),
-                                    arguments: data)
-                                : Fluttertoast.showToast(msg: "");
+                                ? controller.isConnected.value == true
+                                    ? Get.to(const EditProductScreen(),
+                                        arguments: data)
+                                    : Fluttertoast.showToast(
+                                        msg: "You are offline")
+                                : controller.getProduct();
+                            print(controller.isConnected.value);
                           },
                           leading: data.isAvailable == true
                               ? const Icon(Icons.check_circle_sharp)
