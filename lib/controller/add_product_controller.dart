@@ -9,8 +9,9 @@ import '../data/repository/repository.dart';
 import '../data/shared_pref/shared_preferences.dart';
 
 class AddProductController extends GetxController {
-  final repository = Get.put(Repository());
-  final productScreenController = Get.find<ProductScreenController>();
+  Repository repository = Get.find();
+  ProductScreenController productScreenController = Get.find();
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   RxBool isAvailable = false.obs;
@@ -47,10 +48,11 @@ class AddProductController extends GetxController {
     bool isConnected = await checkInternetConnection();
     if (isConnected) {
       final response = await repository.postAddProduct(data);
+      print('response type: ${response.runtimeType}');
       isLoading.value = true;
       if (response != null) {
         Fluttertoast.showToast(msg: 'Product Added');
-        await productScreenController.getProduct();
+        // await productScreenController.getProduct();
         isLoading.value = false;
         Get.back();
       }

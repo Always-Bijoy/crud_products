@@ -22,7 +22,7 @@ class ProductsModel {
   String? description;
   bool? isAvailable;
   int? id;
-  bool? isDownloaded;
+  bool isDownloaded;
 
   factory ProductsModel.fromJson(Map<String, dynamic> json) => ProductsModel(
         tenantId: json["tenantId"],
@@ -41,4 +41,11 @@ class ProductsModel {
         "id": id,
         "isDownloaded": isDownloaded,
       };
+
+  Map<String, dynamic> toRawJson() => {
+    "tenantId": tenantId,
+    "name": name,
+    "description": description,
+    "isAvailable": isAvailable,
+  };
 }

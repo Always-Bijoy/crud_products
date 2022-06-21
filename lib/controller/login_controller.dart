@@ -27,7 +27,7 @@ class LoginController extends GetxController {
     isLoading.value = false;
     if (loginModel != null) {
       SPUtils.setValue(SPUtils.keyAccessToken, loginModel.result?.accessToken);
-      Get.offAll(const ProductScreen());
+      Get.offAllNamed('/productScreen');
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:crud_product/data/model/login_model.dart';
 import 'package:crud_product/data/model/products_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart' as DIO;
 
 class Repository {
   late HttpServiceImpl _httpService;
@@ -39,10 +40,11 @@ class Repository {
     }
   }
 
-  Future postAddProduct(data) async {
+  Future postAddProduct(Map<String,dynamic> data) async {
     try {
       final response = await _httpService.postRequest(ApiProvider.createProduct, data);
       debugPrint('Response from repo ${response.statusCode}, ${response.data}');
+      print('response type: ${response.runtimeType}');
       return response.data;
     } on Exception catch (e) {
       debugPrint(e.toString());

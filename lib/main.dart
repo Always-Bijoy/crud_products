@@ -1,4 +1,10 @@
+import 'package:crud_product/binding/add_product_binding.dart';
+import 'package:crud_product/binding/middleware_binding.dart';
+import 'package:crud_product/binding/product_binding.dart';
+import 'package:crud_product/binding/root_binding.dart';
+import 'package:crud_product/screen/add_product_screen.dart';
 import 'package:crud_product/screen/middleware_screen.dart';
+import 'package:crud_product/screen/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,10 +20,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
+      initialRoute: '/',
+      initialBinding: RootBinding(),
+      getPages: [
+        GetPage(
+            name: '/',
+            page: () => const MiddlewareScreen(),
+            binding: MiddlewareBinding()),
+        GetPage(
+            name: '/productScreen',
+            page: () => const ProductScreen(),
+            binding: ProductBinding()),
+        GetPage(
+            name: '/addProduct',
+            page: () => const AddProductScreen(),
+            binding: AddProductBinding())
+      ],
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MiddlewareScreen(),
     );
   }
 }

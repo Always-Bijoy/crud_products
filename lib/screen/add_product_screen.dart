@@ -7,7 +7,7 @@ class AddProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AddProductController controller = Get.put(AddProductController());
+    AddProductController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),

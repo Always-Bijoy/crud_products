@@ -8,11 +8,12 @@ import 'package:get/get.dart';
 import '../data/shared_pref/shared_preferences.dart';
 
 class ProductScreenController extends GetxController {
-  final repository = Get.put(Repository());
+  final Repository repository = Get.find();
   RxList<ProductsModel> products = <ProductsModel>[].obs;
-  AddProductController addProductController = Get.put(AddProductController());
+  // AddProductController addProductController = Get.put(AddProductController());
+  // AddProductController addProductController = Get.find();
   List<ProductsModel>? productsModel = [];
-  var productsSP;
+  List<ProductsModel>? productsSP = [];
   RxBool isLoading = false.obs;
   ConnectivityResult? _connectivityResult;
 
@@ -38,32 +39,72 @@ class ProductScreenController extends GetxController {
     // var accessToken = await SPUtils.getValue(SPUtils.keyAccessToken);
     // await SPUtils.deleteKey(SPUtils.keyProducts);
     isLoading.value = true;
-    productsModel = await repository.getProductRequest();
-    if (productsModel != null) {
-      /// delete list from old value
-      // await SPUtils.deleteKey(SPUtils.keyProducts);
-      products.addAll(productsModel!);
+    // productsModel = await repository.getProductRequest();
 
-      if (addProductController.products.isNotEmpty) {
-        List<ProductsModel> listMarge = [
-          ...addProductController.products,
-          ...productsSP!
-        ];
-        SPUtils.setListValue(SPUtils.keyProducts, listMarge);
+    try{
+      productsSP = await getSPDataList();
+      if(productsSP != null) {
+        products.addAll(productsSP!);
       }
+    }catch(e){
+      return e.toString();
+    }finally{
+      products.clear();
+      productsModel = await repository.getProductRequest();
+      if(productsModel != null) {
 
-      ///set new product in SP
-      SPUtils.setListValue(SPUtils.keyProducts, products);
+        ///get offline products
+        ///store to server
+        final localData = await SPUtils.getListValue(SPUtils.keyOfflineProducts);
+        if(localData != null){
+          if(localData.isNotEmpty){
+            localData.map((product) async {
+              await repository.postAddProduct(product.toRawJson());
+
+                Future.delayed(const Duration(milliseconds: 200));
+
+            }).toList();
+          }
+        }
+        products.clear();
+        productsModel = await repository.getProductRequest();
+
+        ///clear local cache data
+        final isCleared = await SPUtils.clearCache();
+        if(isCleared){
+          print('cache cleared');
+        }
+        products.addAll(productsModel!);
+        ///set new product in SP
+        SPUtils.setListValue(SPUtils.keyProducts, products);
+        SPUtils.deleteKey(SPUtils.keyOfflineProducts);
+      }
     }
+    // if (productsModel != null) {
+    //   /// delete list from old value
+    //   // await SPUtils.deleteKey(SPUtils.keyProducts);
+    //   products.addAll(productsModel!);
+    //
+    //   // if (addProductController.products.isNotEmpty) {
+    //   //   List<ProductsModel> listMarge = [
+    //   //     ...addProductController.products,
+    //   //     ...productsSP!
+    //   //   ];
+    //   //   SPUtils.setListValue(SPUtils.keyProducts, listMarge);
+    //   // }
+    //
+    //   ///set new product in SP
+    //   SPUtils.setListValue(SPUtils.keyProducts, products);
+    // }
     isLoading.value = false;
 
     /// get SP values
     // productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
-    getSPDataList();
+    // getSPDataList();
   }
 
-  getSPDataList() async {
-    productsSP = await SPUtils.getListValue(SPUtils.keyProducts);
+  Future<List<ProductsModel>?> getSPDataList() async {
+    return await SPUtils.getListValue(SPUtils.keyProducts);
   }
 
   void offlineProductSend(ProductsModel offlineProduct) async {

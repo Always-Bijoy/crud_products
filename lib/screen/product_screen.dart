@@ -1,5 +1,4 @@
 import 'package:crud_product/controller/product_screen_controller.dart';
-import 'package:crud_product/screen/add_product_screen.dart';
 import 'package:crud_product/screen/edit_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,12 +8,12 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        Get.put<ProductScreenController>(ProductScreenController());
+    // final controller = Get.put<ProductScreenController>(ProductScreenController());
+    final ProductScreenController controller = Get.find();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () => Get.to(const AddProductScreen())),
+          onPressed: () => Get.toNamed('/addProduct')),
       appBar: AppBar(
         title: const Text('Product List'),
       ),
@@ -23,9 +22,9 @@ class ProductScreen extends StatelessWidget {
           children: [
             controller.productsSP != null
                 ? ListView.builder(
-                    itemCount: controller.productsSP.length,
+                    itemCount: controller.productsSP?.length,
                     itemBuilder: (context, index) {
-                      final data = controller.productsSP[index];
+                      final data = controller.productsSP![index];
                       return ListTile(
                         onTap: () {
                           data.isDownloaded != true
