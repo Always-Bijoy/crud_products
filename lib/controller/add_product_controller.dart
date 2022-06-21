@@ -64,6 +64,7 @@ class AddProductController extends GetxController {
           isAvailable: isAvailable.value,
           isDownloaded: true));
 
+      var existProductValue = await SPUtils.getListValue(SPUtils.keyProducts);
       SPUtils.setListValue(SPUtils.keyOfflineProducts, products);
 
       Fluttertoast.showToast(msg: 'Product added in offline');

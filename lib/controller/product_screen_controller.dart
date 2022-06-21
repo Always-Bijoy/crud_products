@@ -59,13 +59,14 @@ class ProductScreenController extends GetxController {
       if (productsModel != null) {
         ///get offline products
         ///store to server
-        final localData =
-            await SPUtils.getListValue(SPUtils.keyOfflineProducts);
+        final localData = await SPUtils.getListValue(SPUtils.keyProducts);
         if (localData != null) {
           if (localData.isNotEmpty) {
 
             for(ProductsModel product in localData){
-              await repository.postAddProduct(product.toRawJson());
+              if(product.isDownloaded){
+                await repository.postAddProduct(product.toRawJson());
+              }
               Future.delayed(const Duration(milliseconds: 200));
             }
             //
